@@ -9,4 +9,5 @@ export default defineConfig({
       react(),
     tailwindcss(),
 ],
+base: '/goltsofficial-webpage_tg_payment.git/',
 })
