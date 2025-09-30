@@ -1,154 +1,104 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
+/* Базовые стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .ad-purchase-container {
   width: 100%;
-  height: 100vh;
-  background: #FFF;
-  position: relative;
+  min-height: 100vh;
+  background: #FFFFFF;
   font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Хедер */
 .header {
-  width: 100%;
-  height: 35px;
   background: #2A2A2A;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 10;
+  padding: 10px 0;
+  text-align: center;
 }
 
-.hero-section {
-  width: 100%;
-  height: calc(100vh - 35px - 44px);
-  position: absolute;
-  left: 0;
-  top: 35px;
+.header-content {
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
 }
 
-.dashboard-background {
-  width: 100%;
-  height: 100%;
+/* Основной контент */
+.main-content {
+  flex: 1;
   background: #E6E6E6;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
-}
-
-.decorative-background {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .main-title {
   color: #000;
-  font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: clamp(24px, 6vw, 30px);
+  font-size: 28px;
   font-weight: 700;
-  line-height: 1.2;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 15%;
-  width: 90%;
-  max-width: 275px;
+  margin-bottom: 40px;
   text-align: center;
-  margin: 0;
-  z-index: 5;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  letter-spacing: -0.5px;
 }
 
+/* Подписки */
 .subscription-options {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 30%;
-  width: 90%;
-  max-width: 250px;
-  height: 50%;
-  z-index: 5;
-}
-
-.subscription-item {
-  position: absolute;
-  width: 100%;
-  left: 0;
-}
-
-.subscription-item:nth-child(1) {
-  top: 0%;
-}
-
-.subscription-item:nth-child(2) {
-  top: 40%;
-}
-
-.subscription-item:nth-child(3) {
-  top: 80%;
-}
-
-.subscription-label {
   display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
-  height: 40px;
-  padding: 10px;
-  justify-content: center;
+  max-width: 280px;
+}
+
+.subscription-card {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  position: absolute;
-  top: 0;
-  left: 0;
+}
+
+.subscription-info {
+  margin-bottom: 12px;
 }
 
 .subscription-text {
   color: #000;
-  font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: clamp(10px, 3vw, 12px);
-  font-weight: 700;
-  line-height: normal;
-  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
 }
 
+/* Кнопки */
 .price-button {
-  display: flex;
-  width: 100%;
-  height: 40px;
-  padding: 10px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
   background: #E4C941;
   border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  color: #000;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  position: absolute;
-  top: 45px;
-  left: 0;
-  transition: all 0.2s ease-in-out;
-  transform: translateY(0px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
-  font-size: clamp(10px, 3vw, 12px);
+  width: 100%;
+  transition: all 0.2s ease;
 }
 
 .price-button:hover {
   background: #d4b937;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .price-button:active {
   background: #c4a327;
-  transform: translateY(1px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  transition: all 0.1s ease-in-out;
+  transform: translateY(0);
 }
 
 .button-clicked {
@@ -156,44 +106,31 @@
 }
 
 @keyframes clickPulse {
-  0% {
-    transform: translateY(1px) scale(1);
-  }
-  50% {
-    transform: translateY(1px) scale(0.95);
-  }
-  100% {
-    transform: translateY(1px) scale(1);
-  }
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1); }
+  100% { transform: scale(0.95); }
 }
 
+/* Футер */
 .footer {
-  width: 100%;
-  height: 44px;
   background: #2A2A2A;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  z-index: 10;
+  padding: 10px 0;
+  text-align: center;
 }
 
-/* Адаптация для разных размеров экрана */
-@media (max-height: 600px) {
+.footer-content {
+  color: white;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Адаптивность */
+@media (max-width: 320px) {
   .main-title {
-    top: 10%;
-    font-size: clamp(20px, 5vw, 26px);
+    font-size: 24px;
   }
   
   .subscription-options {
-    top: 25%;
-    height: 60%;
-  }
-  
-  .subscription-item:nth-child(2) {
-    top: 45%;
-  }
-  
-  .subscription-item:nth-child(3) {
-    top: 90%;
+    max-width: 250px;
   }
 }
