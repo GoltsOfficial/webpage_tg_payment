@@ -24,39 +24,42 @@ const AdPurchase = () => {
     }
   }, []);
 
-  const handleBuy = (months, price) => {
-    // Анимация нажатия
-    if (event?.target) {
-      const button = event.target;
-      button.classList.add('button-clicked');
-      setTimeout(() => button.classList.remove('button-clicked'), 200);
-    }
+  const handleBuy = async (months, price) => {
+  // Анимация нажатия
+  const button = event?.target;
+  if (button) {
+    button.classList.add('button-clicked');
+    setTimeout(() => button.classList.remove('button-clicked'), 200);
+  }
 
-    if (window.Telegram?.WebApp) {
-      const tg = window.Telegram.WebApp;
-
-      // Простой инвойс для тестирования
-      const invoice = {
-        title: `Реклама на ${months} мес.`,
-        description: `Рекламный пост на ${months} месяцев`,
-        currency: 'RUB',
-        prices: [{ label: 'Подписка', amount: price * 100 }],
-        payload: `subscription_${months}_${price}`
-      };
-
-      console.log('Открываем платеж:', invoice);
-
-      tg.openInvoice(invoice, (status) => {
-        console.log('Статус платежа:', status);
-        if (status === 'paid') {
-          tg.showAlert('✅ Оплата прошла успешно!');
-        }
-      });
-    } else {
-      // Режим разработки
-      alert(`Тест: Покупка на ${months} мес за ${price} руб`);
-    }
-  };
+  // Проверяем, находимся ли мы в Telegram Mini App
+  if (window.Telegram?.WebApp) {
+    const tg = window.Telegram.WebApp;
+    
+    // Отправляем данные в бота
+    const data = {
+      action: 'buy_subscription',
+      months: months,
+      price: price,
+      user_id: tg.initDataUnsafe?.user?.id,
+      username: tg.initDataUnsafe?.user?.username,
+      timestamp: Date.now()
+    };
+    
+    // Отправляем данные в бота
+    tg.sendData(JSON.stringify(data));
+    
+    // Закрываем Mini App после отправки
+    setTimeout(() => {
+      tg.close();
+    }, 500);
+    
+  } else {
+    // Режим разработки
+    console.log(`Покупка: ${months} мес за ${price} руб`);
+    alert(`✅ Вы выбрали подписку на ${months} мес за ${price} руб.`);
+  }
+};
 
   return (
     <div className="ad-purchase-container">
