@@ -1,0 +1,53 @@
+name: Deploy React to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout your repository code
+      - name: Checkout
+        uses: actions/checkout@v4:cite[6]
+
+      # Step 2: Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a version that matches your project
+
+      # Step 3: Install dependencies and build the project
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
+
+      # Step 4: Configure GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5:cite[3]
+
+      # Step 5: Upload the 'build' folder (common in React) as the artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3:cite[8]
+        with:
+          path: 'dist/' # Change this to './build' if your React project uses that instead
+
+      # Step 6: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4:cite[3]
