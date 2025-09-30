@@ -1,15 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 .ad-purchase-container {
-  width: 310px;
-  height: 500px;
+  width: 100%;
+  height: 100vh;
   background: #FFF;
   position: relative;
   font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
+  overflow: hidden;
 }
 
 .header {
-  width: 310px;
+  width: 100%;
   height: 35px;
   background: #2A2A2A;
   position: absolute;
@@ -19,24 +20,26 @@
 }
 
 .hero-section {
-  width: 310px;
-  height: 500px;
-  position: relative;
-}
-
-.dashboard-background {
-  width: 310px;
-  height: 426px;
-  background: #E6E6E6;
+  width: 100%;
+  height: calc(100vh - 35px - 44px);
   position: absolute;
   left: 0;
   top: 35px;
+}
+
+.dashboard-background {
+  width: 100%;
+  height: 100%;
+  background: #E6E6E6;
+  position: absolute;
+  left: 0;
+  top: 0;
   z-index: 1;
 }
 
 .decorative-background {
-  width: 310px;
-  height: 500px;
+  width: 100%;
+  height: 100%;
   position: absolute;
   left: 0;
   top: 0;
@@ -46,14 +49,16 @@
 .main-title {
   color: #000;
   font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 30px;
+  font-size: clamp(24px, 6vw, 30px);
   font-weight: 700;
   line-height: 1.2;
   position: absolute;
-  left: 21px;
-  top: 74px;
-  width: 275px;
-  height: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 15%;
+  width: 90%;
+  max-width: 275px;
+  text-align: center;
   margin: 0;
   z-index: 5;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -62,60 +67,51 @@
 
 .subscription-options {
   position: absolute;
-  left: 67px;
-  top: 149px;
-  width: 176px;
-  height: 213px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 30%;
+  width: 90%;
+  max-width: 250px;
+  height: 50%;
   z-index: 5;
 }
 
 .subscription-item {
   position: absolute;
-  width: 176px;
+  width: 100%;
+  left: 0;
 }
 
 .subscription-item:nth-child(1) {
-  top: 0px;
+  top: 0%;
 }
 
 .subscription-item:nth-child(2) {
-  top: 91px;
+  top: 40%;
 }
 
 .subscription-item:nth-child(3) {
-  top: 177px;
+  top: 80%;
 }
 
 .subscription-label {
   display: flex;
-  width: 176px;
-  height: 36px;
+  width: 100%;
+  height: 40px;
   padding: 10px;
   justify-content: center;
   align-items: center;
   gap: 10px;
   margin-bottom: 8px;
   position: absolute;
-  top: 0px;
-  left: 0px;
-}
-
-.subscription-item:nth-child(1) .subscription-label {
-  padding: 10px;
-}
-
-.subscription-item:nth-child(2) .subscription-label {
-  padding: 10px 17px;
-}
-
-.subscription-item:nth-child(3) .subscription-label {
-  padding: 10px 14px;
+  top: 0;
+  left: 0;
 }
 
 .subscription-text {
   color: #000;
   font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 12px;
+  font-size: clamp(10px, 3vw, 12px);
   font-weight: 700;
   line-height: normal;
   text-align: center;
@@ -123,8 +119,8 @@
 
 .price-button {
   display: flex;
-  width: 176px;
-  height: 35px;
+  width: 100%;
+  height: 40px;
   padding: 10px;
   justify-content: center;
   align-items: center;
@@ -133,12 +129,13 @@
   border: none;
   cursor: pointer;
   position: absolute;
-  top: 36px;
-  left: 0px;
+  top: 45px;
+  left: 0;
   transition: all 0.2s ease-in-out;
   transform: translateY(0px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 2px;
+  font-size: clamp(10px, 3vw, 12px);
 }
 
 .price-button:hover {
@@ -152,20 +149,6 @@
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   transition: all 0.1s ease-in-out;
-}
-
-.price-button:focus {
-  outline: 2px solid #d4b937;
-  outline-offset: 2px;
-}
-
-.price-text {
-  color: #000;
-  font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: normal;
-  text-align: center;
 }
 
 .button-clicked {
@@ -185,11 +168,32 @@
 }
 
 .footer {
-  width: 310px;
+  width: 100%;
   height: 44px;
   background: #2A2A2A;
   position: absolute;
   left: 0;
-  top: 461px;
+  bottom: 0;
   z-index: 10;
+}
+
+/* Адаптация для разных размеров экрана */
+@media (max-height: 600px) {
+  .main-title {
+    top: 10%;
+    font-size: clamp(20px, 5vw, 26px);
+  }
+  
+  .subscription-options {
+    top: 25%;
+    height: 60%;
+  }
+  
+  .subscription-item:nth-child(2) {
+    top: 45%;
+  }
+  
+  .subscription-item:nth-child(3) {
+    top: 90%;
+  }
 }
