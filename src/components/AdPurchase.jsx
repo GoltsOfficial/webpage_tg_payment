@@ -10,80 +10,72 @@ const AdPurchase = () => {
   }, []); // Dependency array is empty as handleClose does not depend on any state or props
 
   useEffect(() => {
-    if (window.Telegram?.WebApp) {
-      const tg = window.Telegram.WebApp;
-      
-      // Initialize the app
-      tg.ready(); // Inform Telegram the app is ready:cite[1]
-      tg.expand(); // Request to expand the app to full height:cite[5]
-      tg.enableClosingConfirmation(); // Enable confirmation on close attempt
-      
-      // Show and set up the BackButton
-      tg.BackButton.show();
-      tg.BackButton.onClick(handleClose); // Use the memoized function
+  if (window.Telegram?.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.ready(); // Важно: сообщаем Telegram, что приложение готово
+    tg.expand(); // Раскрываем на весь экран
+    tg.enableClosingConfirmation();
+    
+    // Настройка цветов для лучшей интеграции
+    tg.setHeaderColor('#2A2A2A');
+    tg.setBackgroundColor('#E6E6E6');
 
-      // Optional: Set colors to better blend with Telegram
-      tg.setHeaderColor('#2A2A2A'); // Match your header color
-      tg.setBackgroundColor('#E6E6E6'); // Match your background color
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      tg.close();
+    });
+  }
+}, []); // Effect depends on the stable handleClose function
 
-      // Cleanup function to remove event listeners
-      return () => {
-        tg.BackButton.offClick(handleClose); // Clean up the BackButton click handler:cite[10]
-        // Note: 'viewportChanged' event is managed internally by Telegram, but if you added custom logic, consider if it needs cleanup.
-      };
-    }
-  }, [handleClose]); // Effect depends on the stable handleClose function
+  const handleBuy = (months, price) => {
+  // Анимация нажатия (опционально)
+  const button = event.target;
+  button.classList.add('button-clicked');
+  setTimeout(() => button.classList.remove('button-clicked'), 200);
 
-  const handleBuy = useCallback((months, price) => {
-    // Get the button element and add click animation
-    const button = event?.target;
-    if (button) {
-      button.classList.add('button-clicked');
-      setTimeout(() => button.classList.remove('button-clicked'), 200);
-    }
+  // Проверяем, что мы в Telegram Mini App
+  if (window.Telegram?.WebApp) {
+    const tg = window.Telegram.WebApp;
 
-    // Process payment via Telegram Web App
-    if (window.Telegram?.WebApp) {
-      const tg = window.Telegram.WebApp;
+    // Создаем инвойс для платежа
+    const invoice = {
+      title: `Рекламная подписка на ${months} месяц(ев)`,
+      description: `Размещение рекламного поста в канале на ${months} месяцев`,
+      currency: 'RUB', // Валюта платежа
+      prices: [{ label: 'Подписка', amount: price * 100 }], // Сумма в копейках
+      payload: JSON.stringify({ // Данные для вашего бота
+        action: 'buy_subscription',
+        months: months,
+        price: price,
+        user_id: tg.initDataUnsafe?.user?.id,
+        username: tg.initDataUnsafe?.user?.username
+      })
+    };
 
-      // Create an invoice for the payment system:cite[5]
-      const invoice = {
-        title: `Рекламная подписка на ${months} месяц(ев)`,
-        description: `Размещение рекламного поста в канале на ${months} месяцев`,
-        currency: 'RUB',
-        prices: [{ label: 'Подписка', amount: price * 100 }], // Amount in kopeks
-        payload: JSON.stringify({
-          action: 'buy_subscription',
-          months: months,
-          price: price,
-          user_id: tg.initDataUnsafe?.user?.id,
-          username: tg.initDataUnsafe?.user?.username
-        })
-      };
+    // Открываем нативный интерфейс оплаты Telegram
+    tg.openInvoice(invoice, (status) => {
+      // Обрабатываем результат платежа
+      if (status === 'paid') {
+        // Платеж успешен
+        console.log('Платеж прошел успешно!');
+        tg.showAlert('Спасибо за покупку! Ваша реклама скоро будет активирована.', () => {
+          tg.close(); // Закрываем мини-приложение
+        });
+      } else if (status === 'failed') {
+        // Платеж не прошел
+        tg.showAlert('Извините, оплата не прошла. Пожалуйста, попробуйте еще раз.');
+      } else if (status === 'cancelled') {
+        // Пользователь отменил платеж
+        console.log('Пользователь отменил платеж');
+      }
+    });
 
-      // Open the native Telegram payment interface:cite[5]
-      tg.openInvoice(invoice, (status) => {
-        if (status === 'paid') {
-          // Payment was successful
-          console.log('Payment successful!');
-          // You can send data to your bot here if needed, or let your bot handle the pre-checkout query
-          tg.showAlert('Спасибо за покупку! Ваша реклама скоро будет активирована.', () => {
-            tg.close(); // Close the Mini App after user acknowledgment
-          });
-        } else if (status === 'failed') {
-          tg.showAlert('Извините, оплата не прошла. Пожалуйста, попробуйте еще раз.');
-        } else if (status === 'cancelled') {
-          // User closed the invoice without paying
-          console.log('Payment was cancelled by the user.');
-        }
-      });
-
-    } else {
-      // Development mode fallback
-      console.log(`Покупка: ${months} мес за ${price} руб`);
-      alert(`✅ Вы выбрали подписку на ${months} мес за ${price} руб.\n\nВ Telegram Mini App будет запущен процесс оплаты.`);
-    }
-  }, []); // handleBuy uses useCallback and has no dependencies
+  } else {
+    // Режим разработки (вне Telegram)
+    console.log(`Покупка: ${months} мес за ${price} руб`);
+    alert(`✅ Вы выбрали подписку на ${months} мес за ${price} руб.\n\nВ Telegram Mini App будет запущен процесс оплаты.`);
+  }
+};
 
   // Your JSX remains largely the same, it's correctly structured for the UI
   return (
